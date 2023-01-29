@@ -1,4 +1,5 @@
-# Python 3.7
+# !/usr/bin/python3.7
+# coding:utf-8
 # 合并PDF文件
 # pip install PyPDF2 -i https://pypi.tuna.tsinghua.edu.cn/simple
 import os
