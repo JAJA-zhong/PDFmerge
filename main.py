@@ -5,7 +5,7 @@
 import os
 import time
 
-from PyPDF2 import PdfFileMerger
+from PyPDF2 import PdfFileMerger, PdfFileReader,PdfFileWriter
 
 
 # 格式化时间
@@ -37,6 +37,26 @@ class PDFmerge:
             time.sleep(0.1)
         # 写入合并文件
         file_merger.write(f'合并文件_{get_datetime()}.pdf')
+        return f'合并文件_{get_datetime()}.pdf'
+
+    def add_watermark(self,pdf_file_in, pdf_file_mark, pdf_file_out):
+        """把水印添加到pdf中"""
+        pdf_output = PdfFileWriter()
+        input_stream = open(pdf_file_in, 'rb')
+        pdf_input = PdfFileReader(input_stream, strict=False)
+
+        # 获取PDF文件的页数
+        pageNum = pdf_input.getNumPages()
+
+        # 读入水印pdf文件
+        pdf_watermark = PdfFileReader(open(pdf_file_mark, 'rb'), strict=False)
+        # 给每一页打水印
+        for i in range(pageNum):
+            page = pdf_input.getPage(i)
+            page.mergePage(pdf_watermark.getPage(0))
+            page.compressContentStreams()  # 压缩内容
+            pdf_output.addPage(page)
+        pdf_output.write(open(pdf_file_out, 'wb'))
 
 
 if __name__ == "__main__":
@@ -46,5 +66,11 @@ if __name__ == "__main__":
         pass
     else:
         target_path = './'
+
     pdfmerger = PDFmerge(target_path)
-    pdfmerger.run()
+    pdf_file_in=pdfmerger.run()
+    pdf_file_mark=r'/watermark.pdf'
+    water_file=f"水印文件_{pdf_file_in[-18:]}"
+    water_path=input("是否添加水印(1)：")
+    if water_path=='1':
+        pdfmerger.add_watermark(pdf_file_in,pdf_file_mark,water_file)
