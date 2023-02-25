@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     pdfmerger = PDFmerge(target_path)
     pdf_file_in=pdfmerger.run()
-    pdf_file_mark=r'/watermark.pdf'
+    pdf_file_mark=r'watermark.pdf'
     water_file=f"水印文件_{pdf_file_in[-18:]}"
     water_path=input("是否添加水印(1)：")
     if water_path=='1':
